@@ -5,26 +5,62 @@
  * Use of this software requires acceptance of the Evaluation License Agreement. See LICENSE file.
  */
 
-namespace Spryker\Zed\ProductSearchConfigStorage\Communication\Plugin\Event\Listener;
+namespace Spryker\Zed\ProductSearchConfigStorage\Business\Storage;
 
 use Generated\Shared\Transfer\ProductSearchConfigStorageTransfer;
 use Orm\Zed\ProductSearchConfigStorage\Persistence\SpyProductSearchConfigStorage;
-use Spryker\Zed\Kernel\Communication\AbstractPlugin;
+use Spryker\Zed\ProductSearch\ProductSearchConfig;
+use Spryker\Zed\ProductSearchConfigStorage\Dependency\Facade\ProductSearchConfigStorageToProductSearchFacadeInterface;
+use Spryker\Zed\ProductSearchConfigStorage\Persistence\ProductSearchConfigStorageQueryContainerInterface;
 
-/**
- * @method \Spryker\Zed\ProductSearchConfigStorage\Persistence\ProductSearchConfigStorageQueryContainerInterface getQueryContainer()
- * @method \Spryker\Zed\ProductSearchConfigStorage\Communication\ProductSearchConfigStorageCommunicationFactory getFactory()
- */
-class AbstractProductSearchConfigStorageListener extends AbstractPlugin
+class ProductSearchConfigStorageWriter implements ProductSearchConfigStorageWriterInterface
 {
+    /**
+     * @var \Spryker\Zed\ProductSearchConfigStorage\Persistence\ProductSearchConfigStorageQueryContainerInterface
+     */
+    protected $queryContainer;
+
+    /**
+     * @var \Spryker\Zed\ProductSearchConfigStorage\Dependency\Facade\ProductSearchConfigStorageToProductSearchFacadeInterface
+     */
+    protected $productSearchFacade;
+
+    /**
+     * @var \Spryker\Zed\ProductSearch\ProductSearchConfig
+     */
+    protected $productSearchConfig;
+
+    /**
+     * @var bool
+     */
+    protected $isSendingToQueue = true;
+
+    /**
+     * @param \Spryker\Zed\ProductSearchConfigStorage\Persistence\ProductSearchConfigStorageQueryContainerInterface $queryContainer
+     * @param \Spryker\Zed\ProductSearchConfigStorage\Dependency\Facade\ProductSearchConfigStorageToProductSearchFacadeInterface $productSearchFacade
+     * @param \Spryker\Zed\ProductSearch\ProductSearchConfig $productSearchConfig
+     * @param bool $isSendingToQueue
+     */
+    public function __construct(
+        ProductSearchConfigStorageQueryContainerInterface $queryContainer,
+        ProductSearchConfigStorageToProductSearchFacadeInterface $productSearchFacade,
+        ProductSearchConfig $productSearchConfig,
+        $isSendingToQueue
+    ) {
+        $this->queryContainer = $queryContainer;
+        $this->productSearchFacade = $productSearchFacade;
+        $this->productSearchConfig = $productSearchConfig;
+        $this->isSendingToQueue = $isSendingToQueue;
+    }
+
     /**
      * @return void
      */
-    protected function publish()
+    public function publish()
     {
         $productSearchConfigStorageTransfer = new ProductSearchConfigStorageTransfer();
-        $availableProductSearchFilterConfigs = $this->getFactory()->getProductSearchConfig()->getAvailableProductSearchFilterConfigs();
-        $productSearchAttributeTransfers = $this->getFactory()->getProductSearchFacade()->getProductSearchAttributeList();
+        $availableProductSearchFilterConfigs = $this->productSearchConfig->getAvailableProductSearchFilterConfigs();
+        $productSearchAttributeTransfers = $this->productSearchFacade->getProductSearchAttributeList();
 
         foreach ($productSearchAttributeTransfers as $productSearchAttributeTransfer) {
             $facetConfigTransfer = clone $availableProductSearchFilterConfigs[$productSearchAttributeTransfer->getFilterType()];
@@ -43,7 +79,7 @@ class AbstractProductSearchConfigStorageListener extends AbstractPlugin
     /**
      * @return void
      */
-    protected function unpublish()
+    public function unpublish()
     {
         $spyProductStorageEntity = $this->findProductSearchConfigDictionaryStorageEntity();
         $spyProductStorageEntity->delete();
@@ -62,7 +98,7 @@ class AbstractProductSearchConfigStorageListener extends AbstractPlugin
         }
 
         $spyProductSearchConfigStorageEntity->setData($searchConfigExtensionTransfer->toArray());
-        $spyProductSearchConfigStorageEntity->setStore($this->getStoreName());
+        $spyProductSearchConfigStorageEntity->setIsSendingToQueue($this->isSendingToQueue);
         $spyProductSearchConfigStorageEntity->save();
     }
 
@@ -71,14 +107,6 @@ class AbstractProductSearchConfigStorageListener extends AbstractPlugin
      */
     protected function findProductSearchConfigDictionaryStorageEntity()
     {
-        return $this->getQueryContainer()->queryProductSearchConfigStorage()->findOne();
-    }
-
-    /**
-     * @return string
-     */
-    protected function getStoreName()
-    {
-        return $this->getFactory()->getStore()->getStoreName();
+        return $this->queryContainer->queryProductSearchConfigStorage()->findOne();
     }
 }
