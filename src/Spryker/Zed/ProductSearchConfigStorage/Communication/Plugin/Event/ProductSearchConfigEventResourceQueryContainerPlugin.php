@@ -18,7 +18,7 @@ use Spryker\Zed\ProductSearch\Dependency\ProductSearchEvents;
  * @method \Spryker\Zed\ProductSearchConfigStorage\Business\ProductSearchConfigStorageFacadeInterface getFacade()
  * @method \Spryker\Zed\ProductSearchConfigStorage\Communication\ProductSearchConfigStorageCommunicationFactory getFactory()
  */
-class ProductSearchConfigEventResourcePlugin extends AbstractPlugin implements EventResourceQueryContainerPluginInterface
+class ProductSearchConfigEventResourceQueryContainerPlugin extends AbstractPlugin implements EventResourceQueryContainerPluginInterface
 {
     /**
      * Specification:
