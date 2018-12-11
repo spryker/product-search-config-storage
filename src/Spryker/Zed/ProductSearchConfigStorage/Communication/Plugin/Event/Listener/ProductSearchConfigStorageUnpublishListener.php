@@ -14,18 +14,18 @@ use Spryker\Zed\ProductSearch\Dependency\ProductSearchEvents;
 use Spryker\Zed\PropelOrm\Business\Transaction\DatabaseTransactionHandlerTrait;
 
 /**
- * @deprecated Use `\Spryker\Zed\ProductSearchConfigStorage\Communication\Plugin\Event\Listener\ProductSearchConfigStoragePublishListener` and `\Spryker\Zed\ProductSearchConfigStorage\Communication\Plugin\Event\Listener\ProductSearchConfigStorageUnpublishListener` instead.
- *
  * @method \Spryker\Zed\ProductSearchConfigStorage\Persistence\ProductSearchConfigStorageQueryContainerInterface getQueryContainer()
  * @method \Spryker\Zed\ProductSearchConfigStorage\Communication\ProductSearchConfigStorageCommunicationFactory getFactory()
  * @method \Spryker\Zed\ProductSearchConfigStorage\Business\ProductSearchConfigStorageFacadeInterface getFacade()
  * @method \Spryker\Zed\ProductSearchConfigStorage\ProductSearchConfigStorageConfig getConfig()
  */
-class ProductSearchConfigStorageListener extends AbstractPlugin implements EventBulkHandlerInterface
+class ProductSearchConfigStorageUnpublishListener extends AbstractPlugin implements EventBulkHandlerInterface
 {
     use DatabaseTransactionHandlerTrait;
 
     /**
+     * {@inheritdoc}
+     *
      * @api
      *
      * @param \Generated\Shared\Transfer\EventEntityTransfer[] $eventTransfers
@@ -42,10 +42,6 @@ class ProductSearchConfigStorageListener extends AbstractPlugin implements Event
             && $productSearchAttributesCount === 0
         ) {
             $this->getFacade()->unpublish();
-
-            return;
         }
-
-        $this->getFacade()->publish();
     }
 }
