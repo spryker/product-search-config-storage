@@ -7,25 +7,23 @@
 
 namespace Spryker\Zed\ProductSearchConfigStorage\Communication\Plugin\Event\Listener;
 
-use Orm\Zed\ProductSearch\Persistence\SpyProductSearchAttributeQuery;
 use Spryker\Zed\Event\Dependency\Plugin\EventBulkHandlerInterface;
 use Spryker\Zed\Kernel\Communication\AbstractPlugin;
-use Spryker\Zed\ProductSearch\Dependency\ProductSearchEvents;
 use Spryker\Zed\PropelOrm\Business\Transaction\DatabaseTransactionHandlerTrait;
 
 /**
- * @deprecated Use `\Spryker\Zed\ProductSearchConfigStorage\Communication\Plugin\Event\Listener\ProductSearchConfigStoragePublishListener` and `\Spryker\Zed\ProductSearchConfigStorage\Communication\Plugin\Event\Listener\ProductSearchConfigStorageUnpublishListener` instead.
- *
  * @method \Spryker\Zed\ProductSearchConfigStorage\Persistence\ProductSearchConfigStorageQueryContainerInterface getQueryContainer()
  * @method \Spryker\Zed\ProductSearchConfigStorage\Communication\ProductSearchConfigStorageCommunicationFactory getFactory()
  * @method \Spryker\Zed\ProductSearchConfigStorage\Business\ProductSearchConfigStorageFacadeInterface getFacade()
  * @method \Spryker\Zed\ProductSearchConfigStorage\ProductSearchConfigStorageConfig getConfig()
  */
-class ProductSearchConfigStorageListener extends AbstractPlugin implements EventBulkHandlerInterface
+class ProductSearchConfigStoragePublishListener extends AbstractPlugin implements EventBulkHandlerInterface
 {
     use DatabaseTransactionHandlerTrait;
 
     /**
+     * {@inheritdoc}
+     *
      * @api
      *
      * @param \Generated\Shared\Transfer\EventEntityTransfer[] $eventTransfers
@@ -36,15 +34,6 @@ class ProductSearchConfigStorageListener extends AbstractPlugin implements Event
     public function handleBulk(array $eventTransfers, $eventName)
     {
         $this->preventTransaction();
-        $productSearchAttributesCount = SpyProductSearchAttributeQuery::create()->count();
-
-        if (($eventName === ProductSearchEvents::ENTITY_SPY_PRODUCT_SEARCH_ATTRIBUTE_DELETE || $eventName === ProductSearchEvents::PRODUCT_SEARCH_CONFIG_UNPUBLISH)
-            && $productSearchAttributesCount === 0
-        ) {
-            $this->getFacade()->unpublish();
-
-            return;
-        }
 
         $this->getFacade()->publish();
     }
