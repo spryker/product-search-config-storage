@@ -34,9 +34,6 @@ use SprykerTest\Zed\ProductSearchConfigStorage\ProductSearchConfigStorageConfigM
  */
 class ProductSearchConfigStorageListenerTest extends Unit
 {
-    /**
-     * @return void
-     */
     public function testProductSearchConfigStorageListenerStoreData(): void
     {
         // Prepare
@@ -55,9 +52,6 @@ class ProductSearchConfigStorageListenerTest extends Unit
         $this->assertProductSearchConfigStorage();
     }
 
-    /**
-     * @return void
-     */
     public function testProductSearchConfigStoragePublishListener(): void
     {
         // Prepare
@@ -76,9 +70,6 @@ class ProductSearchConfigStorageListenerTest extends Unit
         $this->assertProductSearchConfigStorage();
     }
 
-    /**
-     * @return void
-     */
     public function testProductSearchConfigStorageUnpublishListener(): void
     {
         // Prepare
@@ -98,9 +89,6 @@ class ProductSearchConfigStorageListenerTest extends Unit
         }
     }
 
-    /**
-     * @return \Spryker\Zed\ProductSearchConfigStorage\Business\ProductSearchConfigStorageFacade
-     */
     protected function getProductSearchConfigStorageFacade(): ProductSearchConfigStorageFacade
     {
         $factory = new ProductSearchConfigStorageBusinessFactory();
@@ -112,9 +100,6 @@ class ProductSearchConfigStorageListenerTest extends Unit
         return $facade;
     }
 
-    /**
-     * @return void
-     */
     protected function assertProductSearchConfigStorage(): void
     {
         $productSearchConfigStorageCount = SpyProductSearchConfigStorageQuery::create()->count();

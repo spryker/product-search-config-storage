@@ -11,9 +11,6 @@ use Spryker\Zed\ProductSearchConfigStorage\ProductSearchConfigStorageConfig;
 
 class ProductSearchConfigStorageConfigMock extends ProductSearchConfigStorageConfig
 {
-    /**
-     * @return bool
-     */
     public function isSendingToQueue(): bool
     {
         return false;
