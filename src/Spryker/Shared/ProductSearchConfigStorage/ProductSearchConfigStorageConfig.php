@@ -40,4 +40,14 @@ class ProductSearchConfigStorageConfig extends AbstractBundleConfig
      * @var string
      */
     public const PRODUCT_SEARCH_CONFIG_EXTENSION_RESOURCE_NAME = 'product_search_config_extension';
+
+    /**
+     * Specification:
+     * - Queue name used for product search config publish events.
+     *
+     * @api
+     *
+     * @var string
+     */
+    public const string PUBLISH_PRODUCT_SEARCH_CONFIG_QUEUE = 'publish.product_search_config';
 }
