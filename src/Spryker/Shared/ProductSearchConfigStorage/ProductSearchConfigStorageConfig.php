@@ -7,9 +7,9 @@
 
 namespace Spryker\Shared\ProductSearchConfigStorage;
 
-use Spryker\Shared\Kernel\AbstractBundleConfig;
+use Spryker\Shared\Kernel\AbstractSharedConfig;
 
-class ProductSearchConfigStorageConfig extends AbstractBundleConfig
+class ProductSearchConfigStorageConfig extends AbstractSharedConfig
 {
     /**
      * Specification:
